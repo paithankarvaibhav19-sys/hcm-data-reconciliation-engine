@@ -198,7 +198,9 @@ with tab_raw_data:
     
     st.subheader("Cost Center Master Reference")
     st.dataframe(pd.read_sql_query("SELECT * FROM cost_centers", conn), use_container_width=True)
-venv/
-__pycache__/
-hcm_audit.db
-*.pyc
+st.download_button(
+        label="📥 Download Audit Report (.xlsx)",
+        data=buffer.getvalue(),
+        file_name="HCM_Reconciliation_Report.xlsx",
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
