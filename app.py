@@ -1,8 +1,8 @@
-import streamlit as st
-import sqlite3
-import pandas as pd
 import io
 import os
+import sqlite3
+import pandas as pd
+import streamlit as st
 from setup_db import init_db
 
 st.set_page_config(
@@ -37,9 +37,7 @@ tab_audit, tab_editor, tab_upload, tab_raw_data = st.tabs([
 with tab_audit:
     st.subheader("Automated Reconciliation Controls")
     
-    col_btn, _ = st.columns([1, 4])
-    with col_btn:
-        run_audit = st.button("▶ Run Full Audit", type="primary")
+    run_audit = st.button("▶ Run Full Audit", type="primary")
 
     if run_audit:
         conn = get_connection()
@@ -171,11 +169,9 @@ with tab_upload:
     if st.button("📥 Load Uploaded Files into Engine"):
         if src_file is not None and tgt_file is not None:
             conn = get_connection()
-            # Read Source
             df_upload_src = pd.read_csv(src_file) if src_file.name.endswith(".csv") else pd.read_excel(src_file)
             df_upload_src.to_sql("source_hr_system", conn, if_exists="replace", index=False)
             
-            # Read Target
             df_upload_tgt = pd.read_csv(tgt_file) if tgt_file.name.endswith(".csv") else pd.read_excel(tgt_file)
             df_upload_tgt.to_sql("target_erp_employee", conn, if_exists="replace", index=False)
             conn.close()
@@ -198,9 +194,4 @@ with tab_raw_data:
     
     st.subheader("Cost Center Master Reference")
     st.dataframe(pd.read_sql_query("SELECT * FROM cost_centers", conn), use_container_width=True)
-st.download_button(
-        label="📥 Download Audit Report (.xlsx)",
-        data=buffer.getvalue(),
-        file_name="HCM_Reconciliation_Report.xlsx",
-        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    )
+    conn.close()
